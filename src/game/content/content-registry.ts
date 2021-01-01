@@ -1,13 +1,15 @@
-import type { CellBiome, CellBiomeID } from '../cell'
+import type { CellBiome, CellBiomeID, CellSettlement, CellSettlementID } from '../cell'
+import type { InventoryModifier } from '../inventory'
 import type { ItemType, ItemTypeID } from '../item-type'
 import type { Tech, TechID } from '../tech'
+import invariant from 'invariant'
 
 type EntityID = string | number
 type Entity = { id: EntityID; name?: string }
 type EntityOf<T extends EntityID> = { id: T; name?: string }
+type Costs = InventoryModifier[]
 
 export type GameContentPack = (builder: GameContentPatcher) => void
-
 
 export interface GameContentBuilder {
   build(): GameContent;
@@ -17,12 +19,14 @@ export interface GameContentBuilder {
 export interface GameContentPatcher {
   addTech(tech: Tech): void;
   addItem(itt: ItemType): void;
+  addSettlement(stmt: CellSettlement): void;
 }
 
 export interface GameContent {
   techs: Partial<Record<TechID, Tech>>;
   biomes: Partial<Record<CellBiomeID, CellBiome>>;
   itemTypes: Partial<Record<ItemTypeID, ItemType>>;
+  settlements: Partial<Record<CellSettlementID, CellSettlement>>;
 }
 
 function checkNew(store: Record<EntityID, unknown>, entity: Entity) {
@@ -46,10 +50,21 @@ export function createContentBuilder(): GameContentBuilder {
       const techs: Partial<Record<TechID, Tech>> = {}
       const biomes: Partial<Record<CellBiomeID, CellBiome>> = {}
       const itemTypes: Partial<Record<ItemTypeID, ItemType>> = {}
+      const settlements: Partial<Record<CellSettlementID, CellSettlement>> = {}
 
+      function checkCosts(costs: Costs) {
+        costs.forEach(({ t }) => invariant(!!itemTypes[t], `Item type '${t}' is not defined`))
+      }
+
+      function checkSettlementID(id: CellSettlementID) {
+        invariant(!!settlements[id], `Cell settlement '${id}' is not defined`)
+      }
 
       const patcher = {
+
         addTech(tech: Tech): void {
+          checkCosts(tech.costs)
+          checkSettlementID(tech.requiredSettlementID)
           register(techs, tech)
         },
 
@@ -57,9 +72,13 @@ export function createContentBuilder(): GameContentBuilder {
           register(itemTypes, itt)
         },
 
+        addSettlement(stmt: CellSettlement): void {
+          register(settlements, stmt)
+        },
+
       }
       packs.forEach(pack => pack(patcher))
-      return { techs, biomes, itemTypes }
+      return { techs, biomes, itemTypes, settlements }
     },
   }
 }

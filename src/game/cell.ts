@@ -1,5 +1,5 @@
 export enum CellBiomeID {
-  Temperate
+  Temperate = 'Temperate'
 }
 
 export interface CellBiome {
@@ -7,11 +7,16 @@ export interface CellBiome {
 }
 
 export enum CellNatureID {
-  DenseVegetation
+  DenseVegetation = 'DenseVegetation',
 }
 
 export enum CellSettlementID {
-  None
+  None = 'None'
+}
+
+export interface CellSettlement {
+  id: CellSettlementID;
+  name: string;
 }
 
 export interface Cell {

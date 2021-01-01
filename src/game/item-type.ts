@@ -1,9 +1,9 @@
 export enum ItemTypeID {
-  Stone,
-  Food
+  Stone = 'Stone',
+  Food = 'Food'
 }
 
 export interface ItemType {
-  id: ItemTypeID,
-  name: string
+  id: ItemTypeID;
+  name: string;
 }

@@ -4,7 +4,9 @@ import { TechID } from '../tech'
 import type { GameContentPatcher } from './content-registry'
 
 export default function (patcher: GameContentPatcher): void {
-  const { addItem, addTech } = patcher
+  const { addItem, addTech, addSettlement } = patcher
+
+  addSettlement({ id: CellSettlementID.None, name: 'Unsettled' })
 
   addTech({
     id: TechID.Exploration,

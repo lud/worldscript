@@ -2,7 +2,7 @@ import type { CellSettlementID } from './cell'
 import type { InventoryModifier } from './inventory'
 
 export enum TechID {
-  Exploration
+  Exploration = 'Exploration'
 }
 
 export interface Tech {
