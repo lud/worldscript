@@ -8,7 +8,7 @@ export enum TechID {
 export interface Tech {
   id: TechID;
   name: string;
-  requiredSettlementID: CellSettlementID;
+  requiredSettlementID: null | CellSettlementID;
   duration: number;
   requiredIterations: number;
   costs: InventoryModifier[];

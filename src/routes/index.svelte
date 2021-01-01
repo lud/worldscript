@@ -1,7 +1,7 @@
 <script>
   import Counter from '$components/Counter.svelte'
   import game from '$game/main.ts'
-  console.log('game', game)
+  console.log('game', JSON.stringify(game, 0, 2))
 </script>
 
 <main>

@@ -1,13 +1,13 @@
 import type { CellBiome, CellBiomeID, CellSettlement, CellSettlementID } from '../cell'
-import type { InventoryModifier } from '../inventory'
+import type { InventoryModifier, Costs, Gains } from '../inventory'
 import type { ItemType, ItemTypeID } from '../item-type'
 import type { Tech, TechID } from '../tech'
 import invariant from 'invariant'
+import type { Kraft, KraftID } from '../kraft'
 
 type EntityID = string | number
 type Entity = { id: EntityID; name?: string }
 type EntityOf<T extends EntityID> = { id: T; name?: string }
-type Costs = InventoryModifier[]
 
 export type GameContentPack = (builder: GameContentPatcher) => void
 
@@ -20,6 +20,7 @@ export interface GameContentPatcher {
   addTech(tech: Tech): void;
   addItem(itt: ItemType): void;
   addSettlement(stmt: CellSettlement): void;
+  addKraft(kraft: Kraft): void;
 }
 
 export interface GameContent {
@@ -27,6 +28,7 @@ export interface GameContent {
   biomes: Partial<Record<CellBiomeID, CellBiome>>;
   itemTypes: Partial<Record<ItemTypeID, ItemType>>;
   settlements: Partial<Record<CellSettlementID, CellSettlement>>;
+  krafts: Partial<Record<KraftID, Kraft>>;
 }
 
 function checkNew(store: Record<EntityID, unknown>, entity: Entity) {
@@ -51,8 +53,9 @@ export function createContentBuilder(): GameContentBuilder {
       const biomes: Partial<Record<CellBiomeID, CellBiome>> = {}
       const itemTypes: Partial<Record<ItemTypeID, ItemType>> = {}
       const settlements: Partial<Record<CellSettlementID, CellSettlement>> = {}
+      const krafts: Partial<Record<KraftID, Kraft>> = {}
 
-      function checkCosts(costs: Costs) {
+      function checkCostsGains(costs: Costs) {
         costs.forEach(({ t }) => invariant(!!itemTypes[t], `Item type '${t}' is not defined`))
       }
 
@@ -60,11 +63,21 @@ export function createContentBuilder(): GameContentBuilder {
         invariant(!!settlements[id], `Cell settlement '${id}' is not defined`)
       }
 
+      function checkSettlementIDs(ids: CellSettlementID[]) {
+        ids.forEach(checkSettlementID)
+      }
+
+      function checkTech(id: TechID) {
+        invariant(!!techs[id], `Tech '${id}' is not defined`)
+      }
+
       const patcher = {
 
         addTech(tech: Tech): void {
-          checkCosts(tech.costs)
-          checkSettlementID(tech.requiredSettlementID)
+          checkCostsGains(tech.costs)
+          if (tech.requiredSettlementID) {
+            checkSettlementID(tech.requiredSettlementID)
+          }
           register(techs, tech)
         },
 
@@ -76,9 +89,19 @@ export function createContentBuilder(): GameContentBuilder {
           register(settlements, stmt)
         },
 
+        addKraft(kraft: Kraft): void {
+          checkCostsGains(kraft.costs)
+          checkCostsGains(kraft.gains)
+          checkTech(kraft.requiredTechID)
+          if (kraft.requiredSettlements) {
+            checkSettlementIDs(kraft.requiredSettlements)
+          }
+          register(krafts, kraft)
+        },
+
       }
       packs.forEach(pack => pack(patcher))
-      return { techs, biomes, itemTypes, settlements }
+      return { techs, biomes, itemTypes, settlements, krafts }
     },
   }
 }
