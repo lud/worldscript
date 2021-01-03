@@ -8,10 +8,12 @@ export interface CellBiome {
 
 export enum CellNatureID {
   DenseVegetation = 'DenseVegetation',
+  Rocky = 'Rocky'
 }
 
 export enum CellSettlementID {
-  None = 'None'
+  None = 'None',
+  Cave = 'Cave'
 }
 
 export interface CellSettlement {
@@ -20,13 +22,12 @@ export interface CellSettlement {
 }
 
 export interface Cell {
-  coords: {
-    q: number;
-    r: number;
-  };
   level: number;
-  settled: boolean;
   biome: CellBiomeID;
   nature: CellNatureID;
   settlement: CellSettlementID;
 }
+
+export type UnknownCell = 'UNKNOWN'
+
+export function unknownCell(): UnknownCell { return 'UNKNOWN' }

@@ -20,7 +20,7 @@ export interface Kraft {
   // acceptCell can look in the cell state to know if we have some requirements,
   // for example if an agricultural cell is well irrigated. We have
   // requiredSettlements separated so we cann pick cells faster
-  acceptCell: (cell: Cell) => boolean;
+  acceptCell?: (cell: Cell) => boolean;
   transformCell?: (cell: Cell) => Cell;
   logChanges: (logger: GameLogger) => void;
 }

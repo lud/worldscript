@@ -4,8 +4,7 @@ import { KraftID } from '../kraft'
 import { TechID } from '../tech'
 import type { GameContentPatcher } from './content-registry'
 import { invm } from '../inventory'
-import { noop } from 'svelte/internal'
-import { GameLogger, logmsg } from '../logger'
+import { logmsg } from '../logger'
 
 export default function (patcher: GameContentPatcher): void {
   const { addItem, addTech, addSettlement, addKraft } = patcher

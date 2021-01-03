@@ -1,3 +1,5 @@
 import content from './content'
+import { createMap } from './gmap'
 
-export default content
+const gmap = createMap()
+export default { content, gmap }

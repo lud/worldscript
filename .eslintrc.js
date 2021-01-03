@@ -15,8 +15,8 @@ module.exports = {
     sourceType: 'module',
   },
   plugins: [
-    'svelte3',
     '@typescript-eslint',
+    'svelte3',
   ],
   overrides: [
     {
@@ -26,6 +26,7 @@ module.exports = {
   ],
   rules: {
     '@typescript-eslint/no-empty-interface': ['warn'],
+    '@typescript-eslint/no-unused-vars': [1, { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
     '@typescript-eslint/member-delimiter-style': ['warn', {
       multiline: {
         delimiter: 'semi',

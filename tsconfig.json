@@ -18,9 +18,15 @@
 		"forceConsistentCasingInFileNames": true,
 		"baseUrl": ".",
 		"paths": {
-			"$components/*": ["./src/components/*"]
+			"$components/*": [
+				"./src/components/*"
+			]
 		}
 	},
-	"include": ["src/**/*"],
-	"exclude": ["node_modules/*", ".svelte"]
+	"include": [
+		"src/**/*"
+	],
+	"exclude": [
+		"node_modules/*",
+	]
 }
